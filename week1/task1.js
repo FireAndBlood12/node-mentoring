@@ -1,7 +1,7 @@
 const { Transform } = require('stream');
 
-class ReverseTransform extends Transform {
-    _transform(chunk, encoding, callback) {
+const ReverseTransform = new Transform({
+    transform(chunk, encoding, callback) {
         try {
             const inputString = chunk.toString('utf8');
             const resultString = inputString.trim().split('').reverse().join('')
@@ -10,9 +10,9 @@ class ReverseTransform extends Transform {
             callback(err);
         }
     }
-}
+});
 
 process.stdin
-    .pipe(new ReverseTransform())
+    .pipe(ReverseTransform)
     .on('error', err => console.error(err))
     .pipe(process.stdout);
