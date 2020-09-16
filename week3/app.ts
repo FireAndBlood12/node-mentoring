@@ -2,6 +2,7 @@ import express from 'express';
 // eslint-disable-next-line no-unused-vars
 import { Application } from 'express';
 import userRouter from './routers/users';
+import groupRouter from './routers/groups';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -12,6 +13,7 @@ const port: number = Number(process.env.SERVER_PORT) || 3000;
 
 app.use(express.json());
 app.use('/users', userRouter);
+app.use('/groups', groupRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World tttt!');

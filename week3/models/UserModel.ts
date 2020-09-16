@@ -3,6 +3,7 @@ import sequelize from '../data-access';
 import IUser from '../entities/IUser';
 
 class User extends Model<IUser, any> {
+    login: any;
 }
 
 User.init({
@@ -37,7 +38,7 @@ User.init({
 }, {
     sequelize,
     timestamps: false,
-    tableName: 'users',
+    tableName: 'Users',
     modelName: 'User'
 });
 
