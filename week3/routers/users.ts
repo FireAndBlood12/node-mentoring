@@ -48,11 +48,19 @@ userRouter.post('/', validateSchema(userSchema), async (req, res) => {
 });
 
 userRouter.get('/:id', checkExisting, async (req, res) => {
-    return res.status(200).json(formatResDataObj(await userService.getById(Number(req.params.id))));
+    const user = await userService.getById(Number(req.params.id));
+    return res.status(200).json(formatResDataObj(user));
 });
 
 userRouter.put('/:id', checkExisting, validateSchema(userSchema), async (req, res) => {
-    return res.status(200).json(formatResDataObj(await userService.update(Number(req.params.id), req.body)));
+    const user = await userService.getById(Number(req.params.id));
+    if (user.login !== req.body.login) {
+        if (await userService.checkExistingLogin(req.body.login)) {
+            return res.status(400).json(`User with such login: '${req.body.login}' already exists!`);
+        }
+    }
+    const updatedUser = await userService.update(Number(req.params.id), req.body);
+    return res.status(200).json(formatResDataObj(updatedUser));
 });
 
 userRouter.delete('/:id', checkExisting, async (req, res) => {

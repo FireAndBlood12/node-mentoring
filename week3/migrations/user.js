@@ -1,7 +1,7 @@
 module.exports = {
     up(queryInterface, Sequelize) {
         return  queryInterface.createTable(
-            'users',
+            'Users',
             {
                 id: {
                     type: Sequelize.INTEGER,
@@ -33,7 +33,7 @@ module.exports = {
                 }
             },
             {
-                engine: 'InnoDB',                     // default: 'InnoDB'
+                engine: 'INNODB',                     // default: 'InnoDB'
                 charset: 'latin1',                    // default: null
                 schema: 'public'                      // default: public, PostgreSQL only.
             }
@@ -41,6 +41,6 @@ module.exports = {
     },
 
     down(queryInterface) {
-        return queryInterface.dropTable('users');
+        return queryInterface.dropTable('Users');
     }
 };
