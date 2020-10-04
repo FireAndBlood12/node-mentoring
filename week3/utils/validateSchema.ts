@@ -1,6 +1,7 @@
 /* eslint-disable callback-return */
 import { Schema, ValidationErrorItem } from 'joi';
 import { Request, Response, NextFunction } from 'express';
+import { formatMessForLogging, logger } from '../utils/logger';
 
 function errorResponse(schemasErrors : ValidationErrorItem[]) {
     const errors = schemasErrors.map((error) => {
@@ -20,7 +21,9 @@ function validateSchema(schema : Schema) {
             allowUnknown: false
         });
         if (validationResult.error) {
-            res.status(400).json(errorResponse(validationResult.error.details));
+            const errors = errorResponse(validationResult.error.details);
+            logger.info(formatMessForLogging(req, errors, 400));
+            res.status(400).json(errors);
         } else {
             next();
         }
