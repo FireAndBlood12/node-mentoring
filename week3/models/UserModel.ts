@@ -3,7 +3,9 @@ import sequelize from '../data-access';
 import IUser from '../entities/IUser';
 
 class User extends Model<IUser, any> {
-    login: any;
+    id: Number;
+    login: string;
+    password: string;
 }
 
 User.init({
