@@ -30,8 +30,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/', authRouter);
-app.use('/users', checkAuthToken, userRouter);
-app.use('/groups', checkAuthToken, groupRouter);
+app.use('/users', userRouter);
+app.use('/groups', groupRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World tttt!');

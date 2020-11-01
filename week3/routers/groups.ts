@@ -72,3 +72,4 @@ groupRouter.post('/addUsers/:id', checkExisting, checkExistingUsers, async (req,
 });
 
 export default groupRouter;
+export { groupRouter, groupService, userService };
