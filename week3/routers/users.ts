@@ -6,13 +6,14 @@ import UserService from '../services/UserService';
 import validateSchema from '../utils/validateSchema';
 import userSchema from '../schemas/user.schema';
 import IUserResponse from '../entities/IUserResponse';
+import AppError from '../utils/AppError';
 
 const userService = new UserService(UserModel);
 const userRouter = express.Router();
 
 async function checkExisting(req: Request, res: Response, next: NextFunction) {
     if (!(await userService.checkExisting(Number(req.params.id)))) {
-        res.status(404).json(`No user with such id: '${req.params.id}'!`);
+        next(new AppError(`No user with such id: '${req.params.id}'!`, 404));
     } else next();
 }
 
@@ -39,9 +40,9 @@ userRouter.get('/', async (req, res) => {
     return res.json(formatResDataArr(await userService.getAll()));
 });
 
-userRouter.post('/', validateSchema(userSchema), async (req, res) => {
+userRouter.post('/', validateSchema(userSchema), async (req, res, next) => {
     if (await userService.checkExistingLogin(req.body.login)) {
-        return res.status(400).json(`User with such login: '${req.body.login}' already exists!`);
+        return next(new AppError(`User with such login: '${req.body.login}' already exists!`, 400));
     }
     const createdUser = await userService.create(req.body);
     return res.status(200).json(formatResDataObj(createdUser));
@@ -52,11 +53,11 @@ userRouter.get('/:id', checkExisting, async (req, res) => {
     return res.status(200).json(formatResDataObj(user));
 });
 
-userRouter.put('/:id', checkExisting, validateSchema(userSchema), async (req, res) => {
+userRouter.put('/:id', checkExisting, validateSchema(userSchema), async (req, res, next) => {
     const user = await userService.getById(Number(req.params.id));
     if (user.login !== req.body.login) {
         if (await userService.checkExistingLogin(req.body.login)) {
-            return res.status(400).json(`User with such login: '${req.body.login}' already exists!`);
+            return next(new AppError(`User with such login: '${req.body.login}' already exists!`, 400));
         }
     }
     const updatedUser = await userService.update(Number(req.params.id), req.body);
