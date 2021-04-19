@@ -1,9 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import { Application, Request, Response, NextFunction } from 'express';
+import authRouter from './routers/auth';
 import userRouter from './routers/users';
 import groupRouter from './routers/groups';
 import dotenv from 'dotenv';
 import { formatMessForLogging, formatRequestForLogging, logger } from './utils/logger';
+import checkAuthToken from './utils/authHelpers';
 import AppError from './utils/AppError';
 
 dotenv.config();
@@ -12,6 +15,7 @@ const app: Application = express();
 
 const port: number = Number(process.env.SERVER_PORT) || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -25,8 +29,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/users', userRouter);
-app.use('/groups', groupRouter);
+app.use('/', authRouter);
+app.use('/users', checkAuthToken, userRouter);
+app.use('/groups', checkAuthToken, groupRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World tttt!');

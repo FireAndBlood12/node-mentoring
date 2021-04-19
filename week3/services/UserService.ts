@@ -12,7 +12,6 @@ export default class UserService implements IUserService<User, IUserGenericData>
 
     async getAutoSuggestUsers(loginSubstring: string, limit: number): Promise<User[]> {
         if (loginSubstring && loginSubstring.length && limit) {
-            console.log('here');
             return await this.userModel.findAll({
                 where: {
                     login: { [Op.substring]: loginSubstring },
@@ -44,6 +43,11 @@ export default class UserService implements IUserService<User, IUserGenericData>
     async getById(id: number): Promise<User> {
         return await this.userModel.findByPk(id);
     }
+
+    async getByLogin(login: string): Promise<User> {
+        return await this.userModel.findOne({ where: { login, isDeleted: false } });
+    }
+
     async create(data: IUserGenericData): Promise<User> {
         return await this.userModel.create(data);
     }
